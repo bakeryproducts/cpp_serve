@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+        webserver:
+                build:
+                        context: .
+                        dockerfile: ./webserver/Dockerfile
+                image: web_serve_${POSTFIX}
+                container_name: WEB_${POSTFIX}
+                stdin_open: true
+                command: python3 /webserver/server.py 
+                volumes:
+                        - ${STORAGE}:/mnt/data
+                restart: always
+                environment:
+                        - PYTHONUNBUFFERED=1
+        nginx:
+                build:
+                        context: ./nginx
+                        dockerfile: ./Dockerfile
+                image: nginx_serve_${POSTFIX}
+                container_name: NGX_${POSTFIX}
+                restart: always
+                volumes:
+                        - ${STORAGE}:/mnt/data
+                ports:
+                        - ${NGX_PORT}:80
+                        - 7037:80
+                links:
+                        - webserver
+                        - infer
+        infer:
+                # runtime: nvidia
+                build:
+                        context: .
+                        dockerfile: ./infer/Dockerfile
+                image: infer_serve_${POSTFIX}
+                container_name: INFER_${POSTFIX}
+                stdin_open: true
+                command: python3 /infer/server.py # todo: args
+                volumes:
+                        - ${STORAGE}:/mnt/data
+                restart: always
+                environment:
+                        - PYTHONUNBUFFERED=1
+                # ipc: 'host'
