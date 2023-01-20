@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
       usegpu = false;
   }
 
+  // not using resize atm
   int image_height = 0;
   int image_width = 0;
 
@@ -53,13 +54,11 @@ int main(int argc, char **argv) {
     try {
       auto args = crow::json::load(req.body);
 
-      // Get Image
       std::string base64_image = args["image"].s();
       std::string decoded_image = base64_decode(base64_image);
       std::vector<uchar> image_data(decoded_image.begin(), decoded_image.end());
       cv::Mat image = cv::imdecode(image_data, cv::IMREAD_UNCHANGED);
 
-      // Predict
       std::string pred, prob;
       tie(pred, prob) = infer(image, image_height, image_width, labels, model, usegpu);
 

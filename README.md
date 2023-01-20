@@ -2,6 +2,11 @@
 
 web server for torch cpu/gpu cpp/python inferencing/benchmarking
 
+# TODO
+
+https://github.com/yhirose/cpp-httplib
+
+
 # Change log
 
 ## 20.01.22
@@ -15,13 +20,15 @@ docker run -p 7081:8181 infer_cpp /src/test.sh
 docker run -p 7081:8181 infer_cpp /src/web/start.sh
 cd infer_cpp/src/web/ && python3 test_api.py
 ```
-cpp web server is original CROW with a lot of fixes, outdated af. Ill look for a better/maintained one. 
+cpp web server is original [CROW](https://github.com/ipkn/crow) with a lot of fixes, outdated af. Ill look for a better/maintained one. 
 cpp torch backend is stable 1.13, this one: libtorch-cxx11-abi-shared-with-deps-1.13.1+cpu.zip
 
 test_api will send N POST json requests with jpg image to the dockerized inferencer. 
 
 Right now its cpu-only JITted resnet18 from torchvision, nothing fancy. 
-*Works at speed around 5ms per request*. Now we need to :
+**Works at speed around 5ms per request**. Now we need to :
 1. integrate that into whole compose thing that unifies all inferencing engines
 2. do gpu tests
 3. replace crow with something
+
+* it looks like crow is leaking memory, but there is an [active fork of crow](https://github.com/CrowCpp/Crow) ...
