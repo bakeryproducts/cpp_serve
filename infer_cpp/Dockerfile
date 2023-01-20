@@ -20,14 +20,13 @@ ADD data /data
 RUN cd /src && python3 resnet.py
 
 
-
 FROM debian:stable
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
          g++ \
          make \
          cmake \
-         libopencv-dev 
-         #libboost-all-dev \
+         libopencv-dev \
+         libboost-all-dev
 
 ADD data /data
 ADD src /src
@@ -35,6 +34,5 @@ COPY --from=builder /src/model_cpu.pth /src/models/model_cpu.pth
 COPY --from=builder /src/labels.txt /src/models/labels.txt
 COPY --from=builder /cache/libtorch /src/libtorch
 
-RUN cd /src && ls
-RUN cd /src/models && ls
 RUN cd /src && ./build.sh && ./test.sh
+RUN cd /src/web/ && ./build.sh 
