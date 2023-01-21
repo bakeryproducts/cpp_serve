@@ -26,6 +26,6 @@ std::tuple<std::string, std::string> infer(
   int, int,
   std::vector<std::string>,
   torch::jit::script::Module,
-  bool);
+  torch::Device);
 
 #endif

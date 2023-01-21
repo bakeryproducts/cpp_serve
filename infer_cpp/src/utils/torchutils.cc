@@ -1,6 +1,6 @@
 #include "torchutils.h"
 
-// convert single image
+
 torch::Tensor __convert_image_to_tensor(cv::Mat image) {
   int n_channels = image.channels();
   int height = image.rows;
@@ -30,7 +30,6 @@ torch::Tensor __convert_image_to_tensor(cv::Mat image) {
   return image_as_tensor;
 }
 
-// Predict
 torch::Tensor __predict(torch::jit::script::Module model, torch::Tensor tensor) {
 
   std::vector<torch::jit::IValue> inputs;
@@ -47,42 +46,17 @@ torch::Tensor __predict(torch::jit::script::Module model, torch::Tensor tensor) 
 }
 
 
-// 1. Read model
-torch::jit::script::Module read_model(std::string model_path, bool usegpu) {
-
+torch::jit::script::Module read_model(std::string model_path, torch::Device device) {
   torch::jit::script::Module model = torch::jit::load(model_path);
-
-  if (usegpu) {
-      torch::DeviceType gpu_device_type = torch::kCUDA;
-      torch::Device gpu_device(gpu_device_type);
-
-      model.to(gpu_device);
-  } else {
-      torch::DeviceType cpu_device_type = torch::kCPU;
-      torch::Device cpu_device(cpu_device_type);
-
-      model.to(cpu_device);
-  }
-
+  model.to(device);
   return model;
 }
 
-torch::Tensor forward(std::vector<cv::Mat> images, torch::jit::script::Module model, bool usegpu) {
+
+torch::Tensor forward(std::vector<cv::Mat> images, torch::jit::script::Module model, torch::Device device) {
 
   torch::Tensor tensor = __convert_image_to_tensor(images[0]);
-
-  if (usegpu) {
-      torch::DeviceType gpu_device_type = torch::kCUDA;
-      torch::Device gpu_device(gpu_device_type);
-
-      tensor = tensor.to(gpu_device);
-  } else {
-      torch::DeviceType cpu_device_type = torch::kCPU;
-      torch::Device cpu_device(cpu_device_type);
-
-      tensor = tensor.to(cpu_device);
-  }
-
+  tensor = tensor.to(device);
   torch::Tensor output = __predict(model, tensor);
   return output;
 }

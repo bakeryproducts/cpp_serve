@@ -4,7 +4,14 @@ web server for torch cpu/gpu cpp/python inferencing/benchmarking
 
 # TODO
 
-https://github.com/yhirose/cpp-httplib
+- https://github.com/yhirose/cpp-httplib
+- force resize
+- gpu
+- trt(torchtrt)
+- onnx
+- benchmark options
+- return messages (same for cpp and python? protobuf?)
+
 
 
 # Change log

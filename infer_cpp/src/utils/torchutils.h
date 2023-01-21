@@ -18,7 +18,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-torch::jit::script::Module read_model(std::string, bool);
-torch::Tensor forward(std::vector<cv::Mat>, torch::jit::script::Module, bool);
+torch::jit::script::Module read_model(std::string, torch::Device);
+torch::Tensor forward(std::vector<cv::Mat>, torch::jit::script::Module, torch::Device);
 
 #endif
