@@ -61,10 +61,10 @@ def infer_benchmark(*args, N, base, **kwargs):
     for _ in range(N):
         r = base(*args, **kwargs)
     average_time = (time.time() - start) / N
-    _log(f'Running benchmark: {N} runs {average_time:3.5f} ms each')
+    _log(f'Running benchmark: {N} runs {average_time:3.5f} s each')
 
     assert isinstance(r, dict)
-    r['average_time'] = average_time
+    r['average_time_seconds'] = average_time
     r['num_runs'] = N
     return r
 

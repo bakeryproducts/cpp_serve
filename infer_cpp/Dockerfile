@@ -11,8 +11,8 @@ RUN apt-get install -y \
          wget \
          unzip
 
-# RUN mkdir /cache && cd /cache wget https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.13.1%2Bcpu.zip
-ADD cache /cache
+RUN mkdir /cache && cd /cache && wget https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.13.1%2Bcpu.zip
+# ADD cache /cache
 RUN cd /cache && unzip libtorch-cxx11-abi-shared-with-deps-1.13.1+cpu.zip
 
 ADD src_py /src

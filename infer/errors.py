@@ -1,5 +1,5 @@
 MAX_BENCH_NUM = 10_000
-MIN_BENCH_NUM = 1
+MIN_BENCH_NUM = 0
 
 
 class BenchMarkTotalError(Exception):
