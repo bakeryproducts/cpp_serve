@@ -29,7 +29,7 @@ services:
                         - webserver
                         - infer
         infer:
-                # runtime: nvidia
+                runtime: nvidia
                 build:
                         context: .
                         dockerfile: ./infer/Dockerfile

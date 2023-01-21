@@ -1,4 +1,9 @@
-FROM python:3.8
+# FROM python:3.8
+#FROM nvidia/cuda:11.3.0-runtime-ubuntu20.04
+#RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+#        python3 \
+#        python3-pip
+FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-runtime
 
 COPY infer/whl /infer/whl
 # RUN pip3 install torchvision torch --no-index --find-links /infer/whl
