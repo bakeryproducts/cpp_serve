@@ -9,8 +9,8 @@ app = Flask(__name__)
 
 @app.route("/infer/<string:device>/<string:mode>", methods=['POST'])
 def post_em(device, mode):
-    log(device)
-    log(request.headers)
+    # log(device)
+    # log(request.headers)
     res = dict()
     try:
         model = get_model(device)

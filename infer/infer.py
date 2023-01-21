@@ -3,6 +3,7 @@ import copy
 from PIL import Image
 from functools import partial
 
+import torch
 from torchvision import transforms
 from torchvision.models import resnet18 as resnet
 from torchvision.models import ResNet18_Weights as Weights
@@ -25,11 +26,24 @@ except Exception as e:
     model_gpu = None
 
 
+def _preprocess_on_stats(x, mean, std):
+    x = x / 255.
+    x = (x - mean) / std
+    x = x.unsqueeze(0)
+    x = torch.nn.functional.interpolate(x, (224, 224), mode='bilinear')
+    return x
+
 
 def infer_single(img, model):
     device = next(model.parameters()).device
     img = img.to(device)
-    batch = preprocess(img).unsqueeze(0)
+    orig_prepr = False
+    if orig_prepr:
+        batch = preprocess(img).unsqueeze(0)
+    else:
+        mean = torch.tensor([0.485, 0.456, 0.406]).view(3,1,1).to(device)
+        std  = torch.tensor([0.229, 0.224, 0.225]).view(3,1,1).to(device)
+        batch = _preprocess_on_stats(img, mean, std)
 
     prediction = model(batch).squeeze(0).softmax(0)
     class_id = prediction.argmax().item()

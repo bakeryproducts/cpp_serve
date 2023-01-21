@@ -1,5 +1,7 @@
 #include "infer.h"
 
+#include <chrono>
+
 
 int main(int argc, char **argv) {
 
@@ -35,6 +37,15 @@ int main(int argc, char **argv) {
   cv::Mat image = cv::imread(image_path);
 
   std::string pred, prob;
+
+  std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+  for(int j=0; j<30; j++){
+      tie(pred, prob) = infer(image, image_height, image_width, labels, model, device);
+  }
+  std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+  std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+  //std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
+
   tie(pred, prob) = infer(image, image_height, image_width, labels, model, device);
 
   std::cout << "PREDICTION  : " << pred << std::endl;
