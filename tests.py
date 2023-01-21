@@ -25,8 +25,8 @@ def test_python(NUM_BENCH=100, NUM_REQS = 5):
         result = json.loads(result.decode("utf-8"))
         print(f'\t URL: {url}')
         print('\t Response: ', result)
-        print(f'\t Finished {NUM_REQS} runs: average time per reqest {end / NUM_REQS: 3.3f} ms')
-        print('\n\n')
+        print(f'\t Finished {NUM_REQS} runs: average time per reqest {1e3 * end / NUM_REQS: 3.3f} ms')
+        print()
 
 
 def main(url=1, N=1):
