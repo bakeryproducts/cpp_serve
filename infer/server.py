@@ -5,49 +5,78 @@ from PIL import Image
 
 import torch
 from torchvision import transforms
-# from torchvision.models import resnet50 as resnet
-# from torchvision.models import ResNet50_Weights as Weights
 from torchvision.models import resnet18 as resnet
 from torchvision.models import ResNet18_Weights as Weights
 
 from flask import Flask, make_response, send_file, jsonify, request, render_template
 
-app = Flask(__name__)
-
 
 def log(m): print(m)
 
 
-def infer_single(img):
-    weights = Weights.DEFAULT
-    model = resnet(weights=weights)
-    model.eval()
+class WrongDeviceError(Exception):
+    def __init__(self, device, message="Device is not supported"):
+        self.device = device
+        self.message = message
+        super().__init__(self.message)
 
-    preprocess = weights.transforms()
+
+class GpuIsNotAvailable(Exception):
+    def __init__(self, message="Gpu is not available"):
+        self.message = message
+        super().__init__(self.message)
+
+
+app = Flask(__name__)
+
+weights = Weights.DEFAULT
+preprocess = weights.transforms()
+model_cpu = resnet(weights=weights)
+model_cpu.eval()
+
+try:
+    model_gpu = model_cpu.cuda()
+except Exception as e:
+    log(e)
+    model_gpu = None
+
+
+def infer_single(img, model):
     batch = preprocess(img).unsqueeze(0)
 
     prediction = model(batch).squeeze(0).softmax(0)
     class_id = prediction.argmax().item()
     score = prediction[class_id].item()
     category_name = weights.meta["categories"][class_id]
-    print(f'CLASS: {category_name}')
+    log(f'CLASS: {category_name}')
+    return category_name, score
 
 
-@app.route("/infer/check", methods=['POST'])
-def post_em():
-    print('infer!!!')
-    s = ''
-    if request.method == 'POST':
-        s += f'<h2>THIS IS A TEST</h2>'
-        print(request)
-        f = request.files['fileupload']
-        img = Image.open(f)
-        img = transforms.functional.pil_to_tensor(img)
-        print(img.shape)
-        infer_single(img)
+def load_to_tensor(f):
+    img = Image.open(f)
+    img = transforms.functional.pil_to_tensor(img)
+    log(img.shape)
+    return img
 
+
+@app.route("/infer/<string:device>/single", methods=['POST'])
+def post_em(device):
+    res = dict()
+    try:
+        if device not in ['cpu', 'gpu']:
+            raise WrongDeviceError(device)
+        if device == 'gpu' and model_gpu is None:
+            raise GpuIsNotAvailable
+
+        model = model_cpu if device == 'cpu' else model_gpu
+        img = load_to_tensor(request.files['fileupload'])
+        class_name, prob = infer_single(img, model)
+        res = dict(class_name=class_name, prob=prob)
+    except Exception as e:
+        res[f'POST_HANDLE_ERROR_{__file__}'] = str(e)
+
+    s = jsonify(res)
     return s
-
 
 
 if __name__ == "__main__":
