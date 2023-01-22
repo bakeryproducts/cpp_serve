@@ -3,8 +3,8 @@
 web server for torch cpu/gpu cpp/python inferencing/benchmarking
 
 - python-based inference, 6 modes: cpu/gpu/trt single/benchmark
-- cpp-based inference, crow as webserver, 2 modes: cpu/gpu single 
-- cpp-based inference, cpp-httplib as webserver, 4 modes: cpu/gpu single / benchmark
+- cpp-based inference, [crow](https://github.com/ipkn/crow)as webserver, 2 modes: cpu/gpu single 
+- cpp-based inference, [cpp-httplib](https://github.com/yhirose/cpp-httplib) as webserver, 4 modes: cpu/gpu single / benchmark
 
 Default model in tests is Resnet50:
 ```
