@@ -15,6 +15,29 @@ def log(url, n_runs, result, avg_time):
     print()
 
 
+def test_cpp_httplib(NUM_BENCH=100, NUM_REQS=5):
+    urls = [
+        f'{base_url}/infer_cpp_httplib/cpu/single',
+        # f'{base_url}/infer_cpp_httplib/gpu/single',
+        # f'{base_url}/infer_cpp_httplib/cpu/bench_{NUM_BENCH}',
+        # f'{base_url}/infer_cpp_httplib/gpu/bench_{NUM_BENCH}',
+    ]
+
+    rawbytes = open(image_path, 'rb').read()
+    bytes64 = base64.b64encode(rawbytes)
+    bytes_string = bytes64.decode('utf-8')
+    files = {'image_file': bytes_string}
+
+    for url in urls:
+        start = time.time()
+        for i in range(NUM_REQS):
+            result = requests.post(url, files=files)
+        end = time.time() - start
+
+        result = json.loads(result.text)
+        avg_time = end / NUM_REQS
+        log(url, NUM_REQS, result, avg_time)
+
 
 def test_cpp_crow(NUM_BENCH=1, NUM_REQS=1):
     urls = [
