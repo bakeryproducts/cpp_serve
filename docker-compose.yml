@@ -46,5 +46,25 @@ services:
                     reservations:
                       devices:
                         - driver: nvidia
-                          count: 3
+                          device_ids: ["2"]
+                          capabilities: [gpu]
+        infer_cpp:
+                build:
+                        context: .
+                        dockerfile: ./infer_cpp/Dockerfile
+                image: infer_cpp_serve_${POSTFIX}
+                container_name: INFER_CPP_${POSTFIX}
+                stdin_open: true
+                  #command: python3 /infer/server.py # todo: args
+                volumes:
+                        - ${STORAGE}:/data
+                restart: always
+                environment:
+                        - PYTHONUNBUFFERED=1
+                deploy:
+                  resources:
+                    reservations:
+                      devices:
+                        - driver: nvidia
+                          device_ids: ["3"]
                           capabilities: [gpu]

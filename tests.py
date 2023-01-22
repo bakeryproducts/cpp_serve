@@ -4,6 +4,10 @@ import requests, json, base64
 import fire
 
 
+base_url = "http://localhost:7034"
+image_path = "data/doggo2.jpg"
+
+
 def log(url, n_runs, result, avg_time):
     print(f'\t URL: {url}')
     print('\t Response: ', result)
@@ -11,12 +15,11 @@ def log(url, n_runs, result, avg_time):
     print()
 
 
+
 def test_cpp_crow(NUM_BENCH=1, NUM_REQS=1):
-    base_url = "http://localhost:7034"
     urls = [
         f'{base_url}/infer_cpp/single',
     ]
-    image_path = "data/doggo1.jpg"
     rawbytes = open(image_path, 'rb').read()
     bytes64 = base64.b64encode(rawbytes)
     bytes_string = bytes64.decode('utf-8')
@@ -33,7 +36,6 @@ def test_cpp_crow(NUM_BENCH=1, NUM_REQS=1):
 
 
 def test_python(NUM_BENCH=100, NUM_REQS=5):
-    base_url = "http://localhost:7034"
     urls = [
         f'{base_url}/infer/cpu/single',
         f'{base_url}/infer/gpu/single',
@@ -41,7 +43,6 @@ def test_python(NUM_BENCH=100, NUM_REQS=5):
         f'{base_url}/infer/gpu/bench_{NUM_BENCH}',
     ]
 
-    image_path = "data/doggo1.jpg"
     rawbytes = open(image_path, 'rb').read()
     files = {'fileupload': rawbytes}
 

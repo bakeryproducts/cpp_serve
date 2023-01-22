@@ -4,7 +4,7 @@ include ${CONFIG}
 
 all: start 
 start:
-	docker-compose --env-file ${CONFIG} up webserver nginx infer
+	docker-compose --env-file ${CONFIG} up webserver nginx infer infer_cpp
 build:
 	docker-compose --env-file ${CONFIG} build
 attach:

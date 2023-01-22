@@ -32,12 +32,16 @@ $ python3 tests.py test_python 20 10
 
 # TODO
 
-- https://github.com/yhirose/cpp-httplib
-- force resize
-- gpu
+- ~~cpu/gpu python infer~~
+- ~~cpu/gpu cpp infer~~
+- ~~force resize in 224 for benchmarking~~
+- replace crow, https://github.com/yhirose/cpp-httplib
+- integrate cpp into compose
 - trt(torchtrt)
-- onnx
-- benchmark options
+- py JIT
+- onnx?
+- ~~benchmark options for python~~
+- benchmark options for cpp
 - return messages (same for cpp and python? protobuf?)
 
 
@@ -61,7 +65,7 @@ cpp torch backend is stable 1.13, this one: libtorch-cxx11-abi-shared-with-deps-
 test_api will send N POST json requests with jpg image to the dockerized inferencer. 
 
 Right now its cpu-only JITted resnet18 from torchvision, nothing fancy. 
-**Works at speed around 10ms per request**. Now we need to :
+**Works at speed around 40ms per request**. Now we need to :
 1. integrate that into whole compose thing that unifies all inferencing engines
 2. do gpu tests
 3. replace crow with something

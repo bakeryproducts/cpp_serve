@@ -1,8 +1,8 @@
 import time
 import requests, json, base64
 
-url = "http://172.17.0.2:8181/predict"
-image_path = "../../data/doggo2.jpg"
+url = "http://localhost:7081/infer_cpp/single"
+image_path = "/data/doggo2.jpg"
 rawbytes = open(image_path, 'rb').read()
 bytes64 = base64.b64encode(rawbytes)
 bytes_string = bytes64.decode('utf-8')
