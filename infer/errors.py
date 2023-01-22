@@ -24,3 +24,9 @@ class GpuIsNotAvailable(Exception):
     def __init__(self, message="Gpu is not available"):
         self.message = message
         super().__init__(self.message)
+
+
+class TRTIsNotAvailable(Exception):
+    def __init__(self, message="TRT is not available"):
+        self.message = message
+        super().__init__(self.message)

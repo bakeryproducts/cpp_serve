@@ -36,7 +36,7 @@ $ python3 tests.py test_python 20 10
 - ~~cpu/gpu cpp infer~~
 - ~~force resize in 224 for benchmarking~~
 - replace crow, https://github.com/yhirose/cpp-httplib
-- integrate cpp into compose
+- ~~integrate cpp into compose~~
 - trt(torchtrt)
 - py JIT
 - onnx?

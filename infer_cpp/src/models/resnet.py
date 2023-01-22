@@ -4,8 +4,8 @@ from functools import partial
 
 import torch
 import torchvision
-from torchvision.models import resnet18 as resnet
-from torchvision.models import ResNet18_Weights as Weights
+from torchvision.models import resnet50 as resnet
+from torchvision.models import ResNet50_Weights as Weights
 
 
 

@@ -5,10 +5,10 @@ from functools import partial
 
 import torch
 from torchvision import transforms
-from torchvision.models import resnet18 as resnet
-from torchvision.models import ResNet18_Weights as Weights
+# from torchvision.models import resnet50 as resnet
+from torchvision.models import ResNet50_Weights as Weights
 
-from errors import GpuIsNotAvailable, WrongDeviceError, WrongModeError, BenchMarkTotalError, MAX_BENCH_NUM, MIN_BENCH_NUM
+from errors import GpuIsNotAvailable, WrongDeviceError, WrongModeError, BenchMarkTotalError, MAX_BENCH_NUM, MIN_BENCH_NUM, TRTIsNotAvailable
 
 
 def _log(m): print(m)
@@ -16,14 +16,25 @@ def _log(m): print(m)
 
 weights = Weights.DEFAULT
 preprocess = weights.transforms()
-model_cpu = resnet(weights=weights)
+model_cpu = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=True)
+# model_cpu = resnet(weights=weights) # it should be this one, but accuracy on torchvision model are lower
 model_cpu.eval()
+model_cpu.get_device = lambda:'cpu'
 
 try:
     model_gpu = copy.deepcopy(model_cpu)
     model_gpu.cuda()
+    model_gpu.get_device = lambda:'cuda'
 except Exception as e:
     model_gpu = None
+
+try:
+    import torch_tensorrt # linked to trt engine
+    model_trt = torch.jit.load("/mnt/trt/trt_rn50_224_224.pt")
+    model_trt.get_device = lambda:'cuda'
+except Exception as e:
+    print(f"CANNOT BUILD TRT MODEL, {e}")
+    model_trt = None
 
 
 def _preprocess_on_stats(x, mean, std):
@@ -34,8 +45,9 @@ def _preprocess_on_stats(x, mean, std):
     return x
 
 
+@torch.no_grad()
 def infer_single(img, model):
-    device = next(model.parameters()).device
+    device = model.get_device()
     img = img.to(device)
     orig_prepr = False
     if orig_prepr:
@@ -45,6 +57,7 @@ def infer_single(img, model):
         std  = torch.tensor([0.229, 0.224, 0.225]).view(3,1,1).to(device)
         batch = _preprocess_on_stats(img, mean, std)
 
+    #with torch.autocast(device_type=device):
     prediction = model(batch).squeeze(0).softmax(0)
     class_id = prediction.argmax().item()
     score = prediction[class_id].item()
@@ -61,11 +74,17 @@ def load_to_tensor(f):
 
 
 def get_model(device):
-    if device not in ['cpu', 'gpu']:
+    if device == 'cpu':
+        model = model_cpu
+    elif device == 'gpu':
+        if model_gpu is None: raise GpuIsNotAvailable
+        model = model_gpu
+    elif device == 'trt':
+        if model_trt is None: raise TRTIsNotAvailable
+        model = model_trt
+    else:
         raise WrongDeviceError(device)
-    if device == 'gpu' and model_gpu is None:
-        raise GpuIsNotAvailable
-    model = model_cpu if device == 'cpu' else model_gpu
+
     return model
 
 

@@ -38,6 +38,7 @@ services:
                 command: python3 /infer/server.py # todo: args
                 volumes:
                         - ${STORAGE}:/mnt/data
+                        - ${STORAGE_TRT}:/mnt/trt
                 restart: always
                 environment:
                         - PYTHONUNBUFFERED=1
