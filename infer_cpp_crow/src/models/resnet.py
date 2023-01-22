@@ -14,7 +14,8 @@ class InferWrap(torch.nn.Module):
     def __init__(self, use_original_preprocess=False):
         super().__init__()
         self.weights = Weights.DEFAULT
-        self.model = resnet(weights=self.weights)
+        self.model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=True)
+        #self.model = resnet(weights=self.weights)
         self.model.eval()
 
         if use_original_preprocess:
