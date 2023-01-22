@@ -31,7 +31,7 @@ python3 tests.py all
 $ curl --form "fileupload=@infer_cpp/data/doggo2.jpg" http://localhost:7034/infer/trt/bench_1000
     {"average_time_seconds":0.001876108169555664,"category_name":"Rottweiler","conf":0.9683527946472168,"num_runs":1000}
 
-$ python3 tests.py test_python 20 10
+$ python3 tests.py test_python 100 20
 
 	 URL: http://localhost:7034/infer/cpu/single
 	 Response:  {'category_name': 'Rottweiler', 'conf': 0.9685025215148926}
