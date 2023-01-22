@@ -4,28 +4,58 @@ web server for torch cpu/gpu cpp/python inferencing/benchmarking
 
 # Usage
 
+## Start
+
+### prebuilt TRT engine (GPU)
+
+This will:
+ * pull NGC pytorch docker , pull RN50 model from hub
+ * compile trt engine into TS torch model, fixed img size 224x224
+ * save .pt model inplace
 ```
-$ curl --form "fileupload=@data/doggo.jpg" http://localhost:7034/infer/cpu/single
-    {"category_name":"malinois","conf":0.7659757733345032}
+cd build_trt && ./start.sh
+```
+
+### Main framework
+
+Docker compose with various types of inference for testing latency
+```
+make build
+make start
+python3 tests.py all
+```
+
+## Requests
+
+```
+$ curl --form "fileupload=@infer_cpp/data/doggo2.jpg" http://localhost:7034/infer/trt/bench_1000
+    {"average_time_seconds":0.001876108169555664,"category_name":"Rottweiler","conf":0.9683527946472168,"num_runs":1000}
 
 $ python3 tests.py test_python 20 10
 
 	 URL: http://localhost:7034/infer/cpu/single
-	 Response:  {'category_name': 'Rottweiler', 'conf': 0.7541610598564148}
-	 Finished 20 runs: average time per reqest  43.079 ms
+	 Response:  {'category_name': 'Rottweiler', 'conf': 0.9685025215148926}
+	 Finished 20 runs: average time per reqest  91.552 ms
 
 	 URL: http://localhost:7034/infer/gpu/single
-	 Response:  {'category_name': 'Rottweiler', 'conf': 0.754160463809967}
-	 Finished 20 runs: average time per reqest  9.330 ms
+	 Response:  {'category_name': 'Rottweiler', 'conf': 0.9685019254684448}
+	 Finished 20 runs: average time per reqest  20.077 ms
 
-	 URL: http://localhost:7034/infer/cpu/bench_10
-	 Response:  {'average_time_seconds': 0.032080340385437014, 'category_name': 'Rottweiler', 'conf': 0.7541610598564148, 'num_runs': 10}
-	 Finished 20 runs: average time per reqest  325.763 ms
+	 URL: http://localhost:7034/infer/trt/single
+	 Response:  {'category_name': 'Rottweiler', 'conf': 0.9683527946472168}
+	 Finished 20 runs: average time per reqest  6.978 ms
 
-	 URL: http://localhost:7034/infer/gpu/bench_10
-	 Response:  {'average_time_seconds': 0.0035848140716552733, 'category_name': 'Rottweiler', 'conf': 0.754160463809967, 'num_runs': 10}
-	 Finished 20 runs: average time per reqest  48.477 ms
+	 URL: http://localhost:7034/infer/cpu/bench_100
+	 Response:  {'average_time_seconds': 0.07384127140045166, 'category_name': 'Rottweiler', 'conf': 0.9685025215148926, 'num_runs': 100}
+	 Finished 20 runs: average time per reqest  7653.253 ms
 
+	 URL: http://localhost:7034/infer/gpu/bench_100
+	 Response:  {'average_time_seconds': 0.004479460716247559, 'category_name': 'Rottweiler', 'conf': 0.9685019254684448, 'num_runs': 100}
+	 Finished 20 runs: average time per reqest  462.572 ms
+
+	 URL: http://localhost:7034/infer/trt/bench_100
+	 Response:  {'average_time_seconds': 0.001861283779144287, 'category_name': 'Rottweiler', 'conf': 0.9683527946472168, 'num_runs': 100}
+	 Finished 20 runs: average time per reqest  192.562 ms
 
 
 ```
