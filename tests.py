@@ -39,8 +39,10 @@ def test_python(NUM_BENCH=100, NUM_REQS=5):
     urls = [
         f'{base_url}/infer/cpu/single',
         f'{base_url}/infer/gpu/single',
+        f'{base_url}/infer/trt/single',
         f'{base_url}/infer/cpu/bench_{NUM_BENCH}',
         f'{base_url}/infer/gpu/bench_{NUM_BENCH}',
+        f'{base_url}/infer/trt/bench_{NUM_BENCH}',
     ]
 
     rawbytes = open(image_path, 'rb').read()
