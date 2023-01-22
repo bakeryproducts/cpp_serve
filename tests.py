@@ -15,12 +15,19 @@ def log(url, n_runs, result, avg_time):
     print()
 
 
+def test_all(NUM_BENCH=100, NUM_REQS=5):
+    test_cpp_httplib(NUM_BENCH, NUM_REQS)
+    # test_cpp_crow(NUM_BENCH, NUM_REQS)
+    test_python(NUM_BENCH, NUM_REQS)
+
+
 def test_cpp_httplib(NUM_BENCH=100, NUM_REQS=5):
+    assert NUM_BENCH == 100
     urls = [
         f'{base_url}/infer_cpp_httplib/cpu/single',
-        # f'{base_url}/infer_cpp_httplib/gpu/single',
-        # f'{base_url}/infer_cpp_httplib/cpu/bench_{NUM_BENCH}',
-        # f'{base_url}/infer_cpp_httplib/gpu/bench_{NUM_BENCH}',
+        f'{base_url}/infer_cpp_httplib/gpu/single',
+        f'{base_url}/infer_cpp_httplib/cpu/bench',
+        f'{base_url}/infer_cpp_httplib/gpu/bench',
     ]
 
     rawbytes = open(image_path, 'rb').read()
