@@ -49,14 +49,13 @@ services:
                         - driver: nvidia
                           device_ids: ["2"]
                           capabilities: [gpu]
-        infer_cpp:
+        infer_cpp_crow:
                 build:
                         context: .
-                        dockerfile: ./infer_cpp/Dockerfile
-                image: infer_cpp_serve_${POSTFIX}
-                container_name: INFER_CPP_${POSTFIX}
+                        dockerfile: ./infer_cpp_crow/Dockerfile
+                image: infer_cpp_crow_serve_${POSTFIX}
+                container_name: INFER_CPP_CROW_${POSTFIX}
                 stdin_open: true
-                  #command: python3 /infer/server.py # todo: args
                 volumes:
                         - ${STORAGE}:/data
                 restart: always
@@ -76,7 +75,6 @@ services:
                 image: infer_cpp_httplib_serve_${POSTFIX}
                 container_name: INFER_CPP_HTTPLIB_${POSTFIX}
                 stdin_open: true
-                  #command: python3 /infer/server.py # todo: args
                 volumes:
                         - ${STORAGE}:/data
                 restart: always

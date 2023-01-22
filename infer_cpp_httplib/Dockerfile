@@ -16,9 +16,7 @@ RUN pip3 install torchvision torch
 
 RUN mkdir /cache && cd /cache && wget https://download.pytorch.org/libtorch/cu117/libtorch-cxx11-abi-shared-with-deps-1.13.1%2Bcu117.zip
 RUN cd /cache && unzip libtorch-cxx11-abi-shared-with-deps-1.13.1+cu117.zip
-# ADD data /data
 RUN mkdir /src && mv /cache/libtorch /src/libtorch
 COPY infer_cpp_httplib/src /src
-# COPY src /src
 ENTRYPOINT ["/src/entrypoint.sh"]
 CMD ["/src/web/start.sh"]

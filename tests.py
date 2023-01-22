@@ -17,7 +17,7 @@ def log(url, n_runs, result, avg_time):
 
 def test_all(NUM_BENCH=100, NUM_REQS=5):
     test_cpp_httplib(NUM_BENCH, NUM_REQS)
-    # test_cpp_crow(NUM_BENCH, NUM_REQS)
+    test_cpp_crow(NUM_BENCH, NUM_REQS)
     test_python(NUM_BENCH, NUM_REQS)
 
 
@@ -48,7 +48,7 @@ def test_cpp_httplib(NUM_BENCH=100, NUM_REQS=5):
 
 def test_cpp_crow(NUM_BENCH=1, NUM_REQS=1):
     urls = [
-        f'{base_url}/infer_cpp/single',
+        f'{base_url}/infer_cpp_crow/single',
     ]
     rawbytes = open(image_path, 'rb').read()
     bytes64 = base64.b64encode(rawbytes)
