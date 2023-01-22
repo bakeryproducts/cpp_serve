@@ -2,6 +2,36 @@
 
 web server for torch cpu/gpu cpp/python inferencing/benchmarking
 
+- python-based inference, 6 modes: cpu/gpu/trt single/benchmark
+- cpp-based inference, crow as webserver, 2 modes: cpu/gpu single 
+- cpp-based inference, cpp-httplib as webserver, 4 modes: cpu/gpu single / benchmark
+
+Default model in tests is Resnet50:
+```
+model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=True)
+```
+
+### Modes
+
+Single mode is single ingerence with one reqest and one image:
+```
+$curl --form "fileupload=@data/doggo1.jpg" http://localhost:7034/infer/cpu/single
+    {"category_name":"Rottweiler","conf":0.9683527946472168}
+```
+
+Benchmark mode is for testing actual inference speed, additionally measuring forward propagation time.
+```
+$curl --form "fileupload=@data/doggo1.jpg" http://localhost:7034/infer/cpu/bench_100
+    {"average_time_seconds":0.0021880578994750975,"category_name":"Rottweiler","conf":0.9683527946472168,"num_runs":100}
+```
+
+CPU mode is for cpu inference
+
+GPU mode is for gpu inference
+
+TRT mode is for gpu inference with tensorrt-compiled model
+
+
 # Usage
 
 ## Start
@@ -22,7 +52,7 @@ Docker compose with various types of inference for testing latency
 ```
 make build
 make start
-python3 tests.py all
+python3 tests.py test_all
 ```
 
 ## Requests
@@ -65,13 +95,13 @@ $ python3 tests.py test_python 100 20
 - ~~cpu/gpu python infer~~
 - ~~cpu/gpu cpp infer~~
 - ~~force resize in 224 for benchmarking~~
-- replace crow, https://github.com/yhirose/cpp-httplib
+- ~~replace crow, https://github.com/yhirose/cpp-httplib~~
 - ~~integrate cpp into compose~~
-- trt(torchtrt)
+- ~~trt(torchtrt) for python~~    
 - py JIT
 - onnx?
 - ~~benchmark options for python~~
-- benchmark options for cpp
+- ~~benchmark options for cpp~~
 - return messages (same for cpp and python? protobuf?)
 
 
@@ -116,5 +146,9 @@ python processing speed is about **45 ms per request** in single/cpu mode, **9ms
 
 cpp gpu is also up, **350ms/req** on cpu and **10.5ms/req** on gpu. For some reason on devbox machine cpu speed is 6 times slower then on my laptop( ... Still on crow
 
+## 22.01.22
 
+TRT for python-based inf, moved to [cpp-httplib](https://github.com/yhirose/cpp-httplib) as cpp webserver, 30%-ish percent more requests on gpu then crow-based. 
+Also there is single/bench cpu/gpu modes for cpp-httplib infer. 
+And there is a test_all option for testing all modes
 
