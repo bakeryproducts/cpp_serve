@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 
 
   crow::SimpleApp app;
-  CROW_ROUTE(app, "/infer_cpp/single").methods("POST"_method, "GET"_method)
+  CROW_ROUTE(app, "/infer_cpp_crow/single").methods("POST"_method, "GET"_method)
   ([&image_height, &image_width, &labels, &model, &device](const crow::request& req){
     crow::json::wvalue result;
     result["Prediction"] = "";
