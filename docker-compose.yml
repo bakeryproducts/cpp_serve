@@ -69,3 +69,23 @@ services:
                         - driver: nvidia
                           device_ids: ["3"]
                           capabilities: [gpu]
+        infer_cpp_httplib:
+                build:
+                        context: .
+                        dockerfile: ./infer_cpp_httplib/Dockerfile
+                image: infer_cpp_httplib_serve_${POSTFIX}
+                container_name: INFER_CPP_HTTPLIB_${POSTFIX}
+                stdin_open: true
+                  #command: python3 /infer/server.py # todo: args
+                volumes:
+                        - ${STORAGE}:/data
+                restart: always
+                environment:
+                        - PYTHONUNBUFFERED=1
+                deploy:
+                  resources:
+                    reservations:
+                      devices:
+                        - driver: nvidia
+                          device_ids: ["3"]
+                          capabilities: [gpu]
