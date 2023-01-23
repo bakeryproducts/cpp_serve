@@ -5,9 +5,10 @@ import base64
 import requests
 
 import fire
+from tqdm import tqdm
 from loguru import logger
 
-handlers = [ {"sink": sys.stdout, "format": "{time:[MM-DD HH:mm:ss]} - {message}"}, ]
+handlers = [ {"sink": sys.stdout, "format": "{time:[HH:mm:ss]} - {message}"}, ]
 logger.configure(**{"handlers":handlers})
 
 
@@ -47,7 +48,7 @@ def test_cpp_httplib(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
 
     for url in urls:
         start = time.time()
-        for i in range(NUM_REQS):
+        for i in tqdm(range(NUM_REQS)):
             result = requests.post(url, files=files)
         end = time.time() - start
 
@@ -73,7 +74,7 @@ def test_cpp_crow(NUM_BENCH=1, NUM_REQS=1, cpu=False, gpu=False):
 
     for url in urls:
         start = time.time()
-        for i in range(NUM_REQS):
+        for i in tqdm(range(NUM_REQS)):
             result = requests.post(url, json={"image": bytes_string})
         end = time.time() - start
 
@@ -99,7 +100,7 @@ def test_python(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
 
     for url in urls:
         start = time.time()
-        for i in range(NUM_REQS):
+        for i in tqdm(range(NUM_REQS)):
             result = requests.post(url, files=files)
         end = time.time() - start
 
