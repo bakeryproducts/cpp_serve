@@ -22,10 +22,10 @@
 #include "utils/opencvutils.h"
 
 std::tuple<std::string, std::string> infer(
-  cv::Mat,
-  int, int,
-  std::vector<std::string>,
-  torch::jit::script::Module,
-  torch::Device);
+    cv::Mat,
+    int, int,
+    std::vector<std::string>,
+    torch::jit::script::Module,
+    torch::Device);
 
 #endif

@@ -8,10 +8,11 @@ import fire
 from tqdm import tqdm
 from loguru import logger
 
-handlers = [ dict(sink=sys.stdout, format="<green>{time:MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>",), ]
+handlers = [dict(sink=sys.stdout, format="<green>{time:MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>",), ]
 logger.configure(**{"handlers":handlers})
 
 
+# change accordingly
 base_url = "http://localhost:7034"
 image_path = "data/doggo2.jpg"
 
@@ -23,12 +24,25 @@ def log(url, n_runs, result, avg_time):
 
 
 def test_all(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
+    """Test all modes/options. Various options of sending POST reqs to different servers,
+        can do the same with curl.
+
+    Args:
+        NUM_BENCH (int, optional): Number of runs for benchmarking. Defaults to 100.
+        NUM_REQS (int, optional): Number of requests to run in loop. Defaults to 5.
+        cpu (bool, optional): using CPU as device. Defaults to False.
+        gpu (bool, optional): using GPU as device. Defaults to False.
+    """    
     test_cpp_httplib(NUM_BENCH, NUM_REQS, cpu, gpu)
     test_cpp_crow(NUM_BENCH, NUM_REQS, cpu, gpu)
     test_python(NUM_BENCH, NUM_REQS, cpu, gpu)
 
 
 def test_cpp_httplib(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
+    """ 
+        cpp_httplib webserver test
+    """ 
+    # there is no dynamic setting for number of forward passes in benchmark mode, hardcoded 100 
     assert NUM_BENCH == 100
     assert cpu or gpu
     urls = []
@@ -57,6 +71,10 @@ def test_cpp_httplib(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
 
 
 def test_cpp_crow(NUM_BENCH=1, NUM_REQS=1, cpu=False, gpu=False):
+    """ 
+        CROW webserver test
+    """    
+    # there is no dynamic setting for number of forward passes in benchmark mode, hardcoded 100 
     assert NUM_BENCH == 100
     urls = []
     assert cpu or gpu
@@ -84,6 +102,9 @@ def test_cpp_crow(NUM_BENCH=1, NUM_REQS=1, cpu=False, gpu=False):
 
 
 def test_python(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
+    """ 
+        Python-flask webserver tests
+    """
     urls = []
     assert cpu or gpu
     if cpu:

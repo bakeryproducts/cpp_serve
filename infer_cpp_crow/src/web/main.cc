@@ -7,9 +7,11 @@ using namespace std;
 
 int PORT;
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 
-  if (argc != 5) {
+  if (argc != 5)
+  {
     std::cerr << "usage: predict <path-to-exported-script-module> <path-to-labels-file> <gpu-flag{true/false}> \n";
     return -1;
   }
@@ -25,24 +27,24 @@ int main(int argc, char **argv) {
 
   torch::jit::script::Module model = read_model(model_path, device);
 
-  // not using resize atm
+  // not using resize atm, happens on graph
   int image_height = 0;
   int image_width = 0;
 
-  // Read labels
+  // Read labels from .txt file
   std::vector<std::string> labels;
   std::string label;
-  std::ifstream labelsfile (labels_path);
-  if (labelsfile.is_open()) {
-    while (getline(labelsfile, label)) {
+  std::ifstream labelsfile(labels_path);
+  if (labelsfile.is_open())
+  {
+    while (getline(labelsfile, label))
+    {
       labels.push_back(label);
     }
     labelsfile.close();
   }
 
-
   crow::SimpleApp app;
-  /* std::string post_url = "/infer_cpp_crow/" + device_str + "/single"; */
   CROW_ROUTE(app, "/infer_cpp_crow/single").methods("POST"_method, "GET"_method)
   ([&image_height, &image_width, &labels, &model, &device](const crow::request& req){
     crow::json::wvalue result;
@@ -76,8 +78,6 @@ int main(int argc, char **argv) {
 
   });
 
-  /* std::string post_url_bench = "/infer_cpp_crow/" + device_str + "/bench"; */
-  /* crow::black_magic::const_str post_url_bench = "/infer_cpp_crow/" + device_str + "/bench"; */
   CROW_ROUTE(app, "/infer_cpp_crow/bench").methods("POST"_method, "GET"_method)
   ([&image_height, &image_width, &labels, &model, &device](const crow::request& req){
     crow::json::wvalue result;

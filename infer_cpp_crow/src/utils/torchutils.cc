@@ -1,7 +1,7 @@
 #include "torchutils.h"
 
-
-torch::Tensor __convert_image_to_tensor(cv::Mat image) {
+torch::Tensor __convert_image_to_tensor(cv::Mat image)
+{
   int n_channels = image.channels();
   int height = image.rows;
   int width = image.cols;
@@ -13,24 +13,30 @@ torch::Tensor __convert_image_to_tensor(cv::Mat image) {
   std::vector<int64_t> permute_dims = {2, 0, 1};
 
   torch::Tensor image_as_tensor;
-  if (image_type % 8 == 0) {
+  if (image_type % 8 == 0)
+  {
     torch::TensorOptions options(torch::kUInt8);
     image_as_tensor = torch::from_blob(image.data, torch::IntList(dims), options).clone();
-  } else if ((image_type - 5) % 8 == 0) {
+  }
+  else if ((image_type - 5) % 8 == 0)
+  {
     torch::TensorOptions options(torch::kFloat32);
     image_as_tensor = torch::from_blob(image.data, torch::IntList(dims), options).clone();
-  } else if ((image_type - 6) % 8 == 0) {
+  }
+  else if ((image_type - 6) % 8 == 0)
+  {
     torch::TensorOptions options(torch::kFloat64);
     image_as_tensor = torch::from_blob(image.data, torch::IntList(dims), options).clone();
   }
 
   image_as_tensor = image_as_tensor.permute(torch::IntList(permute_dims));
   image_as_tensor = image_as_tensor.toType(torch::kFloat32);
-  
+
   return image_as_tensor;
 }
 
-torch::Tensor __predict(torch::jit::script::Module model, torch::Tensor tensor) {
+torch::Tensor __predict(torch::jit::script::Module model, torch::Tensor tensor)
+{
 
   std::vector<torch::jit::IValue> inputs;
   inputs.push_back(tensor);
@@ -45,15 +51,15 @@ torch::Tensor __predict(torch::jit::script::Module model, torch::Tensor tensor) 
   return output;
 }
 
-
-torch::jit::script::Module read_model(std::string model_path, torch::Device device) {
+torch::jit::script::Module read_model(std::string model_path, torch::Device device)
+{
   torch::jit::script::Module model = torch::jit::load(model_path);
   model.to(device);
   return model;
 }
 
-
-torch::Tensor forward(std::vector<cv::Mat> images, torch::jit::script::Module model, torch::Device device) {
+torch::Tensor forward(std::vector<cv::Mat> images, torch::jit::script::Module model, torch::Device device)
+{
 
   torch::Tensor tensor = __convert_image_to_tensor(images[0]);
   tensor = tensor.to(device);

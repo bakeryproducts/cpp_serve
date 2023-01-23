@@ -11,6 +11,9 @@ from torchvision.models import ResNet50_Weights as Weights
 
 
 class InferWrap(torch.nn.Module):
+    """ 
+        Wrapper over torch model, adds preprocessing/postproessing into graph
+    """    
     def __init__(self, use_original_preprocess=False):
         super().__init__()
         self.weights = Weights.DEFAULT
@@ -22,7 +25,7 @@ class InferWrap(torch.nn.Module):
             self.preprocess = lambda x: self.weights.transforms()(x).unsqueeze(0)
         else:
             self.mean = torch.nn.Parameter(torch.tensor([0.485, 0.456, 0.406]).view(3,1,1), requires_grad=False)
-            self.std  = torch.nn.Parameter(torch.tensor([0.229, 0.224, 0.225]).view(3,1,1), requires_grad=False)
+            self.std = torch.nn.Parameter(torch.tensor([0.229, 0.224, 0.225]).view(3,1,1), requires_grad=False)
             self.preprocess = self._preprocess_on_stats
 
     def _preprocess_on_stats(self, x):
@@ -48,6 +51,13 @@ class InferWrap(torch.nn.Module):
 
 
 def export_model(model, xb, device):
+    """ Export model with TS
+
+    Args:
+        model (torch.nn.Module): model to export
+        xb (torch.tensor): sample input tensor 
+        device (str): 'cuda' or 'cpu', JIT requires to have target device before saving 
+    """    
     model = model.to(device)
     xb = xb.to(device)
     traced_script_module = torch.jit.trace(model, xb)
@@ -56,15 +66,23 @@ def export_model(model, xb, device):
 
 def main():
     model = InferWrap()
-    xb = (torch.ones(3, 224, 224)*255).int()
+    xb = (torch.ones(3, 224, 224) * 255).int()
     export_model(model, xb, 'cpu')
-    print('TEST START')
+    
+    print('Doing test run...')
     test(model)
     if torch.cuda.is_available:
         export_model(model, xb, 'cuda')
 
 
 def test(model):
+    """ Test run for model, will do single predict on dog image,
+    output should be something like : 
+        {"category_name":"Rottweiler","conf":0.9683527946472168}
+
+    Args:
+        model (torch.nn.Module): model to test
+    """    
     f = '/data/doggo1.jpg'
     img = np.array(Image.open(f))
     img = torch.from_numpy(img)

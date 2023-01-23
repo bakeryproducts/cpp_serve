@@ -1,5 +1,9 @@
 import time
-import requests, json, base64
+import json
+import base64
+import requests
+
+# quick tests for standalone docker 
 
 url = "http://localhost:7081/infer_cpp/single"
 image_path = "/data/doggo2.jpg"

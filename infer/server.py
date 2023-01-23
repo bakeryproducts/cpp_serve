@@ -9,6 +9,16 @@ app = Flask(__name__)
 
 @app.route("/infer/<string:device>/<string:mode>", methods=['POST'])
 def post(device, mode):
+    """ Recieve post request with image, do inference on that image
+
+    Args:
+        device (string): gpu / cpu / trt different devices to do inference on
+        mode (string): single / bench_<int> single image run or
+          benchmarking multiple forward passes
+
+    Returns:
+        string: string with json of prediction results from NN
+    """    
     res = dict()
     try:
         model = get_model(device)

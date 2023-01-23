@@ -16,7 +16,7 @@ model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=True)
 Single mode is single ingerence with one reqest and one image:
 ```
 $curl --form "fileupload=@data/doggo1.jpg" http://localhost:7034/infer/cpu/single
-    {"category_name":"Rottweiler","conf":0.9683527946472168}
+	{"category_name":"Rottweiler","conf":0.9683527946472168}
 ```
 
 Benchmark mode is for testing actual inference speed, additionally measuring forward propagation time.
@@ -30,6 +30,29 @@ CPU mode is for cpu inference
 GPU mode is for gpu inference
 
 TRT mode is for gpu inference with tensorrt-compiled model
+
+All urls:
+
+**python**
+- http://localhost:\<PORT\>/infer/cpu/single
+- http://localhost:\<PORT\>/infer/cpu/bench_\<INT\>
+- http://localhost:\<PORT\>/infer/gpu/single
+- http://localhost:\<PORT\>/infer/gpu/bench_\<INT\>
+- http://localhost:\<PORT\>/infer/trt/single
+- http://localhost:\<PORT\>/infer/trt/bench_\<INT\>
+
+**cpp crow, gpu ony**
+- http://localhost:\<PORT\>/infer_cpp_crow/single
+- http://localhost:\<PORT\>/infer_cpp_crow/bench
+
+**cpp cpp-httplib**
+- http://localhost:\<PORT\>/infer_cpp_httplib/cpu/single
+- http://localhost:\<PORT\>/infer_cpp_httplib/cpu/bench
+- http://localhost:\<PORT\>/infer_cpp_httplib/gpu/single
+- http://localhost:\<PORT\>/infer_cpp_httplib/gpu/bench
+
+
+
 
 
 # Usage
@@ -52,40 +75,83 @@ Docker compose with various types of inference for testing latency
 ```
 make build
 make start
-python3 tests.py test_all
 ```
+
+### Tests
+```
+# pip3 install -r requirements.txt
+
+# test all modes
+python3 tests.py test_all 
+
+# test all gpu modes with 100 benchmark passes and 50 requests each
+python3 tests.py test_all 100 50 --gpu
+
+# test python only, gpu modes with 1 benchmark run and 1 request
+python3 tests.py test_python 1 1 --gpu
+
+# see tests.py for more
+
+```
+
+```
+$ python3 tests.py test_all 100 50 --gpu
+01-23 13:17:15 | DEBUG    | 	 URL: http://localhost:7034/infer_cpp_httplib/gpu/single
+requests: 100%|█████████████████████████████████| 50/50 [00:00<00:00, 63.73it/s]
+01-23 13:17:16 | DEBUG    | 	 Response: {'Prediction': 'Rottweiler', 'Confidence': '0.968502'}
+01-23 13:17:16 | INFO     | 	 Finished 50 runs: average time per reqest  15.737 ms
+01-23 13:17:16 | DEBUG    | ______________________________
+
+01-23 13:17:16 | DEBUG    | 	 URL: http://localhost:7034/infer_cpp_httplib/gpu/bench
+requests: 100%|█████████████████████████████████| 50/50 [00:38<00:00,  1.30it/s]
+01-23 13:17:54 | DEBUG    | 	 Response: {'Prediction': 'Rottweiler', 'Confidence': '0.968502', 'average_time_seconds': '0.007263', 'num_runs': '100'}
+01-23 13:17:54 | INFO     | 	 Finished 50 runs: average time per reqest  770.095 ms
+01-23 13:17:54 | DEBUG    | ______________________________
+
+01-23 13:17:54 | DEBUG    | 	 URL: http://localhost:7034/infer_cpp_crow/single
+requests: 100%|█████████████████████████████████| 50/50 [00:00<00:00, 62.40it/s]
+01-23 13:17:55 | DEBUG    | 	 Response: {'Status': 'Success', 'Confidence': '0.968502', 'Prediction': 'Rottweiler'}
+01-23 13:17:55 | INFO     | 	 Finished 50 runs: average time per reqest  16.034 ms
+01-23 13:17:55 | DEBUG    | ______________________________
+
+01-23 13:17:55 | DEBUG    | 	 URL: http://localhost:7034/infer_cpp_crow/bench
+requests: 100%|█████████████████████████████████| 50/50 [00:58<00:00,  1.16s/it]
+01-23 13:18:53 | DEBUG    | 	 Response: {'average_time_seconds': '0.011014', 'Status': 'Success', 'Confidence': '0.968502', 'Prediction': 'Rottweiler'}
+01-23 13:18:53 | INFO     | 	 Finished 50 runs: average time per reqest  1162.222 ms
+01-23 13:18:53 | DEBUG    | ______________________________
+
+01-23 13:18:53 | DEBUG    | 	 URL: http://localhost:7034/infer/gpu/single
+requests: 100%|█████████████████████████████████| 50/50 [00:00<00:00, 96.24it/s]
+01-23 13:18:54 | DEBUG    | 	 Response: {'category_name': 'Rottweiler', 'conf': 0.9685019254684448}
+01-23 13:18:54 | INFO     | 	 Finished 50 runs: average time per reqest  10.399 ms
+01-23 13:18:54 | DEBUG    | ______________________________
+
+01-23 13:18:54 | DEBUG    | 	 URL: http://localhost:7034/infer/trt/single
+requests: 100%|████████████████████████████████| 50/50 [00:00<00:00, 135.08it/s]
+01-23 13:18:54 | DEBUG    | 	 Response: {'category_name': 'Rottweiler', 'conf': 0.9683527946472168}
+01-23 13:18:54 | INFO     | 	 Finished 50 runs: average time per reqest  7.412 ms
+01-23 13:18:54 | DEBUG    | ______________________________
+
+01-23 13:18:54 | DEBUG    | 	 URL: http://localhost:7034/infer/gpu/bench_100
+requests: 100%|█████████████████████████████████| 50/50 [00:23<00:00,  2.13it/s]
+01-23 13:19:18 | DEBUG    | 	 Response: {'average_time_seconds': 0.0045995450019836424, 'category_name': 'Rottweiler', 'conf': 0.9685019254684448, 'num_runs': 100}
+01-23 13:19:18 | INFO     | 	 Finished 50 runs: average time per reqest  468.894 ms
+01-23 13:19:18 | DEBUG    | ______________________________
+
+01-23 13:19:18 | DEBUG    | 	 URL: http://localhost:7034/infer/trt/bench_100
+requests: 100%|█████████████████████████████████| 50/50 [00:11<00:00,  4.40it/s]
+01-23 13:19:29 | DEBUG    | 	 Response: {'average_time_seconds': 0.0031868886947631837, 'category_name': 'Rottweiler', 'conf': 0.9683527946472168, 'num_runs': 100}
+01-23 13:19:29 | INFO     | 	 Finished 50 runs: average time per reqest  227.394 ms
+01-23 13:19:29 | DEBUG    | ______________________________
+
+```
+
 
 ## Requests
 
 ```
 $ curl --form "fileupload=@infer_cpp/data/doggo2.jpg" http://localhost:7034/infer/trt/bench_1000
     {"average_time_seconds":0.001876108169555664,"category_name":"Rottweiler","conf":0.9683527946472168,"num_runs":1000}
-
-$ python3 tests.py test_python 100 20
-
-	 URL: http://localhost:7034/infer/cpu/single
-	 Response:  {'category_name': 'Rottweiler', 'conf': 0.9685025215148926}
-	 Finished 20 runs: average time per reqest  91.552 ms
-
-	 URL: http://localhost:7034/infer/gpu/single
-	 Response:  {'category_name': 'Rottweiler', 'conf': 0.9685019254684448}
-	 Finished 20 runs: average time per reqest  20.077 ms
-
-	 URL: http://localhost:7034/infer/trt/single
-	 Response:  {'category_name': 'Rottweiler', 'conf': 0.9683527946472168}
-	 Finished 20 runs: average time per reqest  6.978 ms
-
-	 URL: http://localhost:7034/infer/cpu/bench_100
-	 Response:  {'average_time_seconds': 0.07384127140045166, 'category_name': 'Rottweiler', 'conf': 0.9685025215148926, 'num_runs': 100}
-	 Finished 20 runs: average time per reqest  7653.253 ms
-
-	 URL: http://localhost:7034/infer/gpu/bench_100
-	 Response:  {'average_time_seconds': 0.004479460716247559, 'category_name': 'Rottweiler', 'conf': 0.9685019254684448, 'num_runs': 100}
-	 Finished 20 runs: average time per reqest  462.572 ms
-
-	 URL: http://localhost:7034/infer/trt/bench_100
-	 Response:  {'average_time_seconds': 0.001861283779144287, 'category_name': 'Rottweiler', 'conf': 0.9683527946472168, 'num_runs': 100}
-	 Finished 20 runs: average time per reqest  192.562 ms
 
 
 ```
@@ -102,6 +168,7 @@ $ python3 tests.py test_python 100 20
 - onnx?
 - ~~benchmark options for python~~
 - ~~benchmark options for cpp~~
+- ~~some docs~~
 - return messages (same for cpp and python? protobuf?)
 
 
@@ -152,3 +219,9 @@ TRT for python-based inf, moved to [cpp-httplib](https://github.com/yhirose/cpp-
 Also there is single/bench cpu/gpu modes for cpp-httplib infer. 
 And there is a test_all option for testing all modes
 
+## 23.01.22
+
+Docs, cleanup. There are quite a lot of things to do:
+ - Less bloated docker images
+ - cpp infer without base64 encoding
+ - ...
