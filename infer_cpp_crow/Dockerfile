@@ -18,4 +18,4 @@ RUN cd /cache && unzip libtorch-cxx11-abi-shared-with-deps-1.13.1+cu117.zip
 RUN mkdir /src && mv /cache/libtorch /src/libtorch
 COPY infer_cpp_crow/src /src
 ENTRYPOINT ["/src/entrypoint.sh"]
-CMD ["/src/web/start_gpu.sh"]
+CMD ["/src/web/start.sh"]
