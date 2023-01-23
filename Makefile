@@ -11,7 +11,5 @@ attach:
 	docker attach ${CONTAINER}
 stop: 
 	docker-compose --env-file ${CONFIG} kill
-# remove:
-# 	docker-
 restart: stop start
 re: build start

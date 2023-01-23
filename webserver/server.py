@@ -1,7 +1,4 @@
-import urllib
 import argparse
-from pathlib import Path
-from collections import defaultdict
 
 from flask import Flask, make_response, send_file, jsonify, request, render_template
 
@@ -16,7 +13,6 @@ def index():
     s = ''
     s += f'<h2>Hello world</h2>'
     return s
-
 
 
 if __name__ == "__main__":

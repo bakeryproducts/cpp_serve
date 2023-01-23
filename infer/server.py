@@ -8,9 +8,7 @@ app = Flask(__name__)
 
 
 @app.route("/infer/<string:device>/<string:mode>", methods=['POST'])
-def post_em(device, mode):
-    # log(device)
-    # log(request.headers)
+def post(device, mode):
     res = dict()
     try:
         model = get_model(device)
@@ -18,7 +16,6 @@ def post_em(device, mode):
 
         img = load_to_tensor(request.files['fileupload'])
         res = infer(img, model)
-
     except Exception as e:
         res[f'POST_HANDLE_ERROR_{__file__}'] = str(e)
 
