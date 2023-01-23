@@ -8,9 +8,8 @@ import fire
 from tqdm import tqdm
 from loguru import logger
 
-handlers = [ {"sink": sys.stdout, "format": "{time:[HH:mm:ss]} - {message}"}, ]
+handlers = [ dict(sink=sys.stdout, format="<green>{time:MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>",), ]
 logger.configure(**{"handlers":handlers})
-
 
 
 base_url = "http://localhost:7034"
@@ -48,7 +47,7 @@ def test_cpp_httplib(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
 
     for url in urls:
         start = time.time()
-        for i in tqdm(range(NUM_REQS)):
+        for i in tqdm(range(NUM_REQS), desc='requests', colour='green'):
             result = requests.post(url, files=files)
         end = time.time() - start
 
@@ -74,7 +73,7 @@ def test_cpp_crow(NUM_BENCH=1, NUM_REQS=1, cpu=False, gpu=False):
 
     for url in urls:
         start = time.time()
-        for i in tqdm(range(NUM_REQS)):
+        for i in tqdm(range(NUM_REQS), desc='requests', colour='green'):
             result = requests.post(url, json={"image": bytes_string})
         end = time.time() - start
 
@@ -100,7 +99,7 @@ def test_python(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
 
     for url in urls:
         start = time.time()
-        for i in tqdm(range(NUM_REQS)):
+        for i in tqdm(range(NUM_REQS), desc='requests', colour='green'):
             result = requests.post(url, files=files)
         end = time.time() - start
 
