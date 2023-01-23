@@ -7,7 +7,7 @@ find_package(Boost REQUIRED COMPONENTS system thread)
 
 include_directories(${Boost_INCLUDE_DIRS})
 
-add_executable(cnn-inference main.cc base64.cc ../infer.cc ../utils/opencvutils.cc ../utils/torchutils.cc)
+add_executable(cnn-inference main.cc ../infer.cc ../utils/opencvutils.cc ../utils/torchutils.cc)
 
 target_link_libraries(cnn-inference "${TORCH_LIBRARIES}")
 target_link_libraries(cnn-inference "${OpenCV_LIBS}")

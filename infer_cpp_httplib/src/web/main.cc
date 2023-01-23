@@ -1,6 +1,5 @@
 #include "../infer.h"
 #include "httplib.h"
-#include "base64.h"
 #include <chrono>
 
 using namespace httplib;
@@ -69,9 +68,7 @@ int main(int argc, char **argv)
              //std::cout << "DEBUG look at ya, posting cringe!" << std::endl;
              auto image_file = req.get_file_value("image_file");
 
-             // i cant figure out how to do send-recieve POST jsons without base64 encoding, leaving it as is.
-             std::string base64_image = image_file.content;
-             std::string decoded_image = base64_decode(base64_image);
+             std::string decoded_image = image_file.content;
              std::vector<uchar> image_data(decoded_image.begin(), decoded_image.end());
              cv::Mat image = cv::imdecode(image_data, cv::IMREAD_UNCHANGED);
 
@@ -90,8 +87,7 @@ int main(int argc, char **argv)
              //std::cout << " look at ya, posting cringe!" << std::endl;
              auto image_file = req.get_file_value("image_file");
 
-             std::string base64_image = image_file.content;
-             std::string decoded_image = base64_decode(base64_image);
+             std::string decoded_image = image_file.content;
              std::vector<uchar> image_data(decoded_image.begin(), decoded_image.end());
              cv::Mat image = cv::imdecode(image_data, cv::IMREAD_UNCHANGED);
 

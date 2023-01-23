@@ -146,15 +146,41 @@ requests: 100%|█████████████████████�
 
 ```
 
+## curl Requests
 
-## Requests
-
+### Python
 ```
-$ curl --form "fileupload=@infer_cpp/data/doggo2.jpg" http://localhost:7034/infer/trt/bench_1000
+$ curl --form "fileupload=@data/doggo2.jpg" http://localhost:7034/infer/cpu/single
+    {"category_name":"Rottweiler","conf":0.9685025215148926}
+
+$ curl --form "fileupload=@data/doggo2.jpg" http://localhost:7034/infer/gpu/bench_321
+    {"average_time_seconds":0.004574902703828901,"category_name":"Rottweiler","conf":0.9685019254684448,"num_runs":321}
+
+$ curl --form "fileupload=@data/doggo2.jpg" http://localhost:7034/infer/trt/bench_1000
     {"average_time_seconds":0.001876108169555664,"category_name":"Rottweiler","conf":0.9683527946472168,"num_runs":1000}
 
+```
+
+### cpp-httplib
 
 ```
+$ curl --form "image_file=@data/doggo2.jpg" http://localhost:7034/infer_cpp_httplib/gpu/single
+    {"Prediction":"Rottweiler","Confidence":"0.968503"}
+
+$ curl --form "image_file=@data/doggo2.jpg" http://localhost:7034/infer_cpp_httplib/gpu/single
+    {"Prediction":"Rottweiler","Confidence":"0.968502"}
+
+$ curl --form "image_file=@data/doggo2.jpg" http://localhost:7034/infer_cpp_httplib/cpu/bench
+    {"Prediction":"Rottweiler","Confidence":"0.968503","average_time_seconds":"0.066293","num_runs":"100"}
+
+$ curl --form "image_file=@data/doggo2.jpg" http://localhost:7034/infer_cpp_httplib/gpu/bench
+    {"Prediction":"Rottweiler","Confidence":"0.968502","average_time_seconds":"0.007234","num_runs":"100"}
+```
+
+### cpp-crow
+
+cpp-crow runs on base64 images in json, not sure how to do that from curl...
+
 
 # TODO
 

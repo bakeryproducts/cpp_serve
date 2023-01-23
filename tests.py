@@ -32,17 +32,18 @@ def test_all(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
         NUM_REQS (int, optional): Number of requests to run in loop. Defaults to 5.
         cpu (bool, optional): using CPU as device. Defaults to False.
         gpu (bool, optional): using GPU as device. Defaults to False.
-    """    
+    """
     test_cpp_httplib(NUM_BENCH, NUM_REQS, cpu, gpu)
     test_cpp_crow(NUM_BENCH, NUM_REQS, cpu, gpu)
     test_python(NUM_BENCH, NUM_REQS, cpu, gpu)
 
 
 def test_cpp_httplib(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
-    """ 
+    """
         cpp_httplib webserver test
-    """ 
-    # there is no dynamic setting for number of forward passes in benchmark mode, hardcoded 100 
+    """
+
+    # there is no dynamic setting for number of forward passes in benchmark mode, hardcoded 100
     assert NUM_BENCH == 100
     assert cpu or gpu
     urls = []
@@ -54,9 +55,7 @@ def test_cpp_httplib(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
         urls.append(f'{base_url}/infer_cpp_httplib/gpu/bench')
 
     rawbytes = open(image_path, 'rb').read()
-    bytes64 = base64.b64encode(rawbytes)
-    bytes_string = bytes64.decode('utf-8')
-    files = {'image_file': bytes_string}
+    files = {'image_file': rawbytes}
 
     for url in urls:
         start = time.time()
@@ -71,10 +70,11 @@ def test_cpp_httplib(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
 
 
 def test_cpp_crow(NUM_BENCH=1, NUM_REQS=1, cpu=False, gpu=False):
-    """ 
+    """
         CROW webserver test
-    """    
-    # there is no dynamic setting for number of forward passes in benchmark mode, hardcoded 100 
+    """
+
+    # there is no dynamic setting for number of forward passes in benchmark mode, hardcoded 100
     assert NUM_BENCH == 100
     urls = []
     assert cpu or gpu
