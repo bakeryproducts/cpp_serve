@@ -23,10 +23,10 @@ def log(url, n_runs, result, avg_time):
     logger.debug("______________________________\n")
 
 
-def test_all(NUM_BENCH=100, NUM_REQS=5):
-    test_cpp_httplib(NUM_BENCH, NUM_REQS)
-    test_cpp_crow(NUM_BENCH, NUM_REQS)
-    test_python(NUM_BENCH, NUM_REQS)
+def test_all(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
+    test_cpp_httplib(NUM_BENCH, NUM_REQS, cpu, gpu)
+    test_cpp_crow(NUM_BENCH, NUM_REQS, cpu, gpu)
+    test_python(NUM_BENCH, NUM_REQS, cpu, gpu)
 
 
 def test_cpp_httplib(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
@@ -57,6 +57,7 @@ def test_cpp_httplib(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
 
 
 def test_cpp_crow(NUM_BENCH=1, NUM_REQS=1, cpu=False, gpu=False):
+    assert NUM_BENCH == 100
     urls = []
     assert cpu or gpu
     if cpu:
