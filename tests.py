@@ -20,7 +20,7 @@ def log(url, n_runs, result, avg_time):
     logger.debug(f'\t URL: {url}')
     logger.debug(f'\t Response: {result}')
     logger.info(f'\t Finished {n_runs} runs: average time per reqest {1e3 * avg_time: 3.3f} ms')
-    logger.debug()
+    logger.debug("______________________________\n")
 
 
 def test_all(NUM_BENCH=100, NUM_REQS=5):
@@ -60,7 +60,7 @@ def test_cpp_crow(NUM_BENCH=1, NUM_REQS=1, cpu=False, gpu=False):
     urls = []
     assert cpu or gpu
     if cpu:
-        log.error('i can figure dynamic routing in crow, only gpu is available at /infer_cpp_crow/single and /infer_cpp_crow/bench')
+        logger.error('i cant figure out dynamic routing in crow, only gpu is available at /infer_cpp_crow/single and /infer_cpp_crow/bench')
         #urls.append(f'{base_url}/infer_cpp_crow/cpu/single')
     if gpu:
         urls.append(f'{base_url}/infer_cpp_crow/single')
