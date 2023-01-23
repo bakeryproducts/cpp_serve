@@ -46,8 +46,8 @@ def test_cpp_httplib(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
 
     for url in urls:
         start = time.time()
-        logger.debug(f'\n\t URL: {url}')
-        for i in tqdm(range(NUM_REQS), desc='requests', colour='green'):
+        logger.debug(f'\t URL: {url}')
+        for i in tqdm(range(NUM_REQS), desc='requests', colour='green', ncols=80):
             result = requests.post(url, files=files)
         end = time.time() - start
 
@@ -73,8 +73,8 @@ def test_cpp_crow(NUM_BENCH=1, NUM_REQS=1, cpu=False, gpu=False):
 
     for url in urls:
         start = time.time()
-        logger.debug(f'\n\t URL: {url}')
-        for i in tqdm(range(NUM_REQS), desc='requests', colour='green'):
+        logger.debug(f'\t URL: {url}')
+        for i in tqdm(range(NUM_REQS), desc='requests', colour='green', ncols=80):
             result = requests.post(url, json={"image": bytes_string})
         end = time.time() - start
 
@@ -100,8 +100,8 @@ def test_python(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
 
     for url in urls:
         start = time.time()
-        logger.debug(f'\n\t URL: {url}')
-        for i in tqdm(range(NUM_REQS), desc='requests', colour='green'):
+        logger.debug(f'\t URL: {url}')
+        for i in tqdm(range(NUM_REQS), desc='requests', colour='green', ncols=80):
             result = requests.post(url, files=files)
         end = time.time() - start
 
