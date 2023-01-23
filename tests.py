@@ -17,7 +17,6 @@ image_path = "data/doggo2.jpg"
 
 
 def log(url, n_runs, result, avg_time):
-    logger.debug(f'\t URL: {url}')
     logger.debug(f'\t Response: {result}')
     logger.info(f'\t Finished {n_runs} runs: average time per reqest {1e3 * avg_time: 3.3f} ms')
     logger.debug("______________________________\n")
@@ -47,6 +46,7 @@ def test_cpp_httplib(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
 
     for url in urls:
         start = time.time()
+        logger.debug(f'\n\t URL: {url}')
         for i in tqdm(range(NUM_REQS), desc='requests', colour='green'):
             result = requests.post(url, files=files)
         end = time.time() - start
@@ -73,6 +73,7 @@ def test_cpp_crow(NUM_BENCH=1, NUM_REQS=1, cpu=False, gpu=False):
 
     for url in urls:
         start = time.time()
+        logger.debug(f'\n\t URL: {url}')
         for i in tqdm(range(NUM_REQS), desc='requests', colour='green'):
             result = requests.post(url, json={"image": bytes_string})
         end = time.time() - start
@@ -99,6 +100,7 @@ def test_python(NUM_BENCH=100, NUM_REQS=5, cpu=False, gpu=False):
 
     for url in urls:
         start = time.time()
+        logger.debug(f'\n\t URL: {url}')
         for i in tqdm(range(NUM_REQS), desc='requests', colour='green'):
             result = requests.post(url, files=files)
         end = time.time() - start
